@@ -188,9 +188,14 @@ def live_panel():
         st.info(
             f"Market is closed (as of {now_et:%Y-%m-%d %H:%M} ET, weekday/hours check only -- "
             f"holidays not accounted for). Next expected open: {next_open_et:%A %Y-%m-%d %H:%M} ET. "
-            "Not polling Yahoo Finance while closed."
+            "Showing the last completed session below -- this is frozen historical data, "
+            "not live, and it will only fetch once every 60s (the closed-market heartbeat) "
+            "rather than your configured refresh rate."
         )
-        return
+        # Deliberately NOT returning here -- fall through to fetch/render the
+        # last available session so you can still review the day's data while
+        # closed. yfinance's period="1d" call still returns the completed
+        # session's bars after the close, so this is real data, not a stub.
 
     if not all(tickers):
         st.warning("Enter all three tickers in the sidebar.")
